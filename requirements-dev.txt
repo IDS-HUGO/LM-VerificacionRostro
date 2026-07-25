@@ -1,0 +1,5 @@
+# Dependencias adicionales solo para desarrollo/tests (no se instalan en la imagen de producción).
+-r requirements.txt
+pytest>=8.0,<9.0
+httpx>=0.27,<1.0   # requerido por fastapi.testclient.TestClient
+pytest-mock>=3.12,<4.0

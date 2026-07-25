@@ -1,0 +1,15 @@
+# Compose standalone para correr el microservicio KYC de forma aislada en
+# desarrollo local. No depende de ningún otro servicio del monorepo (no
+# persiste datos, así que no hay volúmenes de base de datos aquí).
+services:
+  kyc-service:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SIMILARITY_THRESHOLD: "0.32"
+      DETECTOR_BACKEND: "retinaface"
+      MODEL_NAME: "ArcFace"
+      MAX_UPLOAD_SIZE_MB: "8"
+      PORT: "8000"
+    restart: unless-stopped
