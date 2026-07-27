@@ -12,4 +12,10 @@ services:
       MODEL_NAME: "ArcFace"
       MAX_UPLOAD_SIZE_MB: "8"
       PORT: "8000"
+    volumes:
+      - deepface_weights:/root/.deepface
     restart: unless-stopped
+
+volumes:
+  deepface_weights:
+
