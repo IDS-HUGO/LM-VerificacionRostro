@@ -1,21 +1,24 @@
-# Compose standalone para correr el microservicio KYC de forma aislada en
-# desarrollo local. No depende de ningún otro servicio del monorepo (no
-# persiste datos, así que no hay volúmenes de base de datos aquí).
 services:
   kyc-service:
     build: .
     ports:
-      - "8000:8000"
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
     environment:
-      SIMILARITY_THRESHOLD: "0.32"
-      DETECTOR_BACKEND: "retinaface"
-      MODEL_NAME: "ArcFace"
-      MAX_UPLOAD_SIZE_MB: "8"
+      SIMILARITY_THRESHOLD: "${SIMILARITY_THRESHOLD:-0.32}"
+      DETECTOR_BACKEND: "${DETECTOR_BACKEND:-retinaface}"
+      MODEL_NAME: "${MODEL_NAME:-ArcFace}"
+      MAX_UPLOAD_SIZE_MB: "${MAX_UPLOAD_SIZE_MB:-8}"
       PORT: "8000"
+      ALLOWED_ORIGINS: "${ALLOWED_ORIGINS:-}"
     volumes:
       - deepface_weights:/root/.deepface
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=5).status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
   deepface_weights:
-

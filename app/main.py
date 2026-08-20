@@ -1,15 +1,9 @@
-"""API HTTP del microservicio de verificación facial (KYC).
-
-Contrato fail-closed para quien consuma este servicio (la app Flutter, no
-implementada aquí): cualquier respuesta que no sea 2xx, o un timeout, DEBE
-tratarse como "no verificado". Este servicio nunca devuelve un match
-implícito por default ante error.
-"""
 import time
 import uuid
 from typing import Optional
 
 from fastapi import FastAPI, File, Header, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
@@ -34,6 +28,20 @@ app = FastAPI(
     ),
     version="0.1.0",
 )
+
+_settings = get_settings()
+_allowed_origins = _settings.allowed_origins_list
+if _allowed_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_allowed_origins,
+        allow_credentials=True,
+        allow_methods=["POST", "GET", "OPTIONS"],
+        allow_headers=["Content-Type", "X-Request-Id", "Authorization"],
+    )
+    logger.info("cors_enabled", extra={"allowed_origins": _allowed_origins})
+else:
+    logger.info("cors_disabled_no_origins_configured")
 
 
 class PayloadTooLargeError(Exception):

@@ -1,9 +1,3 @@
-"""Configuración del servicio, leída desde variables de entorno.
-
-Todos los valores tienen un default seguro para desarrollo local, pero
-`SIMILARITY_THRESHOLD` en particular DEBE recalibrarse con muestras reales
-de INE/pasaporte mexicanos antes de usarse en producción (ver README.md).
-"""
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -35,9 +29,21 @@ class Settings(BaseSettings):
     # Puerto en el que corre uvicorn cuando se invoca este módulo directamente.
     PORT: int = 8000
 
+    # Orígenes permitidos para CORS, separados por coma (ej:
+    # "https://app.midominio.com,https://admin.midominio.com"). Vacío por
+    # default = CORS deshabilitado (comportamiento anterior, correcto si solo
+    # te consume la app Flutter/backend y nunca un navegador directamente).
+    # Usa "*" solo si de verdad no manejas credenciales/cookies y entiendes
+    # el riesgo de abrir el endpoint a cualquier origen.
+    ALLOWED_ORIGINS: str = ""
+
     @property
     def max_upload_size_bytes(self) -> int:
         return self.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.ALLOWED_ORIGINS.split(",") if o.strip()]
 
 
 @lru_cache
