@@ -4,7 +4,7 @@ services:
     ports:
       - "127.0.0.1:${APP_PORT:-8000}:8000"
     environment:
-      SIMILARITY_THRESHOLD: "${SIMILARITY_THRESHOLD:-0.32}"
+      SIMILARITY_THRESHOLD: "${SIMILARITY_THRESHOLD:-0.65}"
       DETECTOR_BACKEND: "${DETECTOR_BACKEND:-retinaface}"
       MODEL_NAME: "${MODEL_NAME:-ArcFace}"
       MAX_UPLOAD_SIZE_MB: "${MAX_UPLOAD_SIZE_MB:-8}"
