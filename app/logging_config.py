@@ -32,6 +32,8 @@ def configure_logging(level: int = logging.INFO) -> None:
 
 def get_logger(name: str = "kyc_service") -> logging.Logger:
     configure_logging()
+    if not name.startswith("kyc_service"):
+        name = f"kyc_service.{name}"
     return logging.getLogger(name)
 
 
