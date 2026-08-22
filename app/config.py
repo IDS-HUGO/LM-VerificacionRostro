@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # match = distance <= SIMILARITY_THRESHOLD
     # Punto de partida razonable para ArcFace + cosine, NO calibrado con datos
     # reales de identificaciones mexicanas.
-    SIMILARITY_THRESHOLD: float = 0.32
+    SIMILARITY_THRESHOLD: float = 0.65
 
     # Backend de detección de rostros usado tanto para extraer el rostro de la
     # identificación como para verificar contra la selfie.

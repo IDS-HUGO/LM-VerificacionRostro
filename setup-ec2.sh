@@ -295,7 +295,7 @@ step "Escribiendo .env"
 
 cat > "$APP_DIR/.env" <<EOF
 APP_PORT=${APP_PORT}
-SIMILARITY_THRESHOLD=${SIMILARITY_THRESHOLD:-0.32}
+SIMILARITY_THRESHOLD=${SIMILARITY_THRESHOLD:-0.65}
 DETECTOR_BACKEND=${DETECTOR_BACKEND:-retinaface}
 MODEL_NAME=${MODEL_NAME:-ArcFace}
 MAX_UPLOAD_SIZE_MB=${MAX_UPLOAD_SIZE_MB:-8}
@@ -421,8 +421,12 @@ echo "✅ nginx configurado y recargado."
 step "Obteniendo/renovando certificado TLS con certbot"
 
 if $SUDO certbot certificates 2>/dev/null | grep -q "Domains: .*\b${DOMAIN}\b"; then
-  echo "Ya existe un certificado para $DOMAIN; certbot renovará solo si hace falta."
-  retry 2 10 $SUDO certbot renew --nginx --cert-name "$DOMAIN" --non-interactive || true
+  echo "Ya existe un certificado para $DOMAIN; reinstalando config SSL en nginx."
+  # Usamos --reinstall (no renew) para que certbot SIEMPRE reinyecte los
+  # bloques SSL en la config de nginx, incluso si el certificado no necesita
+  # renovarse. Esto es necesario porque el paso anterior sobreescribe la
+  # config de nginx con solo el bloque HTTP (sin SSL).
+  retry 2 10 $SUDO certbot --nginx -d "$DOMAIN" --reinstall --non-interactive --redirect
 else
   retry 2 15 $SUDO certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos -m "$EMAIL" --redirect
 fi

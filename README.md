@@ -38,7 +38,7 @@ python3 -m venv .venv
 
 ### 3. Configurar variables de entorno (opcional, todas tienen default)
 ```bash
-export SIMILARITY_THRESHOLD=0.32
+export SIMILARITY_THRESHOLD=0.65
 export DETECTOR_BACKEND=retinaface
 export MODEL_NAME=ArcFace
 export MAX_UPLOAD_SIZE_MB=8
@@ -86,7 +86,7 @@ Header opcional `X-Request-Id` (si no se envía, el servicio genera uno).
   "match": true,
   "similarity": 0.81,
   "distance": 0.19,
-  "threshold": 0.32,
+  "threshold": 0.65,
   "model": "ArcFace",
   "liveness": {"status": "skipped", "score": null}
 }
@@ -136,7 +136,7 @@ solo un campo informativo más amigable.
 
 ## 🎯 Umbral de similitud
 
-`SIMILARITY_THRESHOLD` (default `0.32`) se aplica sobre `distance` (métrica
+`SIMILARITY_THRESHOLD` (default `0.65`) se aplica sobre `distance` (métrica
 coseno de `ArcFace`): `match = distance <= SIMILARITY_THRESHOLD`.
 
 **Este valor es un punto de partida razonable, NO un valor calibrado con
